@@ -1,0 +1,15 @@
+node_modules
+dist
+.env
+test.json
+src/test.ts
+
+# IDE-specific
+.vscode/
+.idea/
+
+# secrets
+*.decrypted
+*.decrypted.*
+
+package-lock.json
