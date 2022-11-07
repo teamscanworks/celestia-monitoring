@@ -1,8 +1,6 @@
 # celestia-monitoring
 
-## High level arq 
-
-[![](https://mermaid.ink/img/pako:eNpFjssKwjAQRX8lzEqh-YEuhIa4K1jt0rgYmtEGTROSVJC2_27E16wu555hZoLOaYISLgF9z-qDGlieXdUeXbQumsjxRiHxSOFuOjoxzjdzu69nVjWNFKvKeynWv61_LaQUbwwFWAoWjc53phdTkHqypKDMUWO4KlDDkr3Ra0y01Sa5AOUZb5EKwDG59jF0UKYw0leSBvPP9mMtT9FbQMk)](https://mermaid.live/edit#pako:eNpFjssKwjAQRX8lzEqh-YEuhIa4K1jt0rgYmtEGTROSVJC2_27E16wu555hZoLOaYISLgF9z-qDGlieXdUeXbQumsjxRiHxSOFuOjoxzjdzu69nVjWNFKvKeynWv61_LaQUbwwFWAoWjc53phdTkHqypKDMUWO4KlDDkr3Ra0y01Sa5AOUZb5EKwDG59jF0UKYw0leSBvPP9mMtT9FbQMk)
+Celestia monitoring is a real-time monitoring and alerting system for Celestia blockchain.
 
 ## Workflow
 
