@@ -1,12 +1,5 @@
 export type RuleType =
-    | 'successTransaction'
-    | 'failedTransaction'
-    | 'valueTransaction'
-    | 'IBCTransfer'
-    | 'messageExecution'
-    | 'eventsEmitted'
-    | 'cosmosStateChange'
-    | 'balanceChange';
+    | 'valueTransaction';
 
 export type Target = 'address' | 'tag' | 'message';
 
