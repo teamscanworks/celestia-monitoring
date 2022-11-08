@@ -1,6 +1,8 @@
 # celestia-monitoring
 
-Celestia monitoring is a real-time monitoring and alerting system for Celestia blockchain.
+Range is building a real-time monitoring and alerting platorm for the IBC ecosystem.
+
+This repository extends Range to support Celetia and the rollups that post data to it.
 
 ## Workflow
 
