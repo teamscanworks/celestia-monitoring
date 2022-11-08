@@ -2,7 +2,6 @@ import { AlertEvent } from './alert/model/alert-event';
 import { SQLClient } from './sql/client';
 import { EventEvent } from './event/model/event-event';
 import { AlertRule } from './alert/model/alert-rule';
-import { DestinationInfo } from './alert/model/destination-info';
 
 const TABLE_ALERT_RULE = 'public."AlertRule"';
 const TABLE_ALERT_EVENT = 'public."AlertEvent"';
@@ -115,16 +114,6 @@ export class AppDBClient extends SQLClient {
     async resetRulesOffsets(offset: number): Promise<void> {
         const stmnt = `UPDATE ${TABLE_ALERT_RULE_OFFSET} SET "offset" = $1`;
         await this.sql(stmnt, [offset]);
-    }
-
-    // TODO: there may be many destinations, this should return an array
-    async getDestinationInfo(ruleId: string): Promise<DestinationInfo | null> {
-        const stmnt = `SELECT type, params FROM ${TABLE_DESTINATION} d INNER JOIN ${TABLE_DESTINATION_TYPE} dt ON d."destinationTypeId" = dt.id WHERE "alertRuleId" = $1`;
-        const { rows, rowCount } = await this.sql(stmnt, [ruleId]);
-        if (rowCount < 1) {
-            return null;
-        }
-        return rows[0];
     }
 
     async getAlertRuleType(alertRuleId: string): Promise<string> {
