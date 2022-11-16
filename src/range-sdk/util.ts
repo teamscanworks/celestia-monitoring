@@ -4,14 +4,14 @@ import { Attribute as TendermintAttribute, Event } from "@cosmjs/tendermint-rpc"
 import { Attribute, StringEvent } from "cosmjs-types/cosmos/base/abci/v1beta1/abci"
 
 export const getRpcUrl: () => string = () => {
-    return process.env.RPC_URL || "https://rpc.limani.celestia-devops.dev";
+    return process.env.RPC_URL || "https://rpc.limani.celestia-devops.dev" //https://rpc.mamaki.celestia.counterpoint.software" // ;
 };
 
 export const getRangeConfig: () => RangeConfig = () => {
 
     return {
         rpcUrl: getRpcUrl(),
-        network: "arabica",
+        network: "arabica", // mamaki or arabica
         chainId: 1,
     };
 };
