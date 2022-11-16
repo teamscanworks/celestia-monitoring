@@ -10,6 +10,7 @@ import { writeFile } from "fs/promises"
 import { IndexerStargateClient } from "./range-sdk/client"
 import { getRangeConfig, getRpcUrl } from "./range-sdk/util"
 import { DbType } from "./database/types"
+import fetch from 'node-fetch';
 
 
 export const createIndexer = async () => {
@@ -65,16 +66,40 @@ export const createIndexer = async () => {
         let txIndex = 0
         while (txIndex < block.txs.length) {
             const txHash: string = toHex(sha256(block.txs[txIndex])).toUpperCase()
+
+            const response = await fetch("https://rpc.mamaki.celestia.counterpoint.software/tx?hash=0x9B279A4E8CFE887E256B9F67EC100CDD1A80DEA58D9A6FDC3240CC23431FCD37", {
+                headers: {
+                    'accept': 'application/json'
+                }
+            }).then(res => res.json()).catch((e) => {
+                console.log(`node-fetch: Error getting tx ${txHash}: ${e}`)
+                return null
+            });
+
+            if (!response) {
+                console.log(`Error getting tx ${txHash}`)
+                txIndex++
+                continue
+            }
+
+            const indexed: IndexedTx = response.result;
+            console.log("Indexed:", indexed)
+            await handleTx(indexed);
+            txIndex++
+
+            /*
             const indexed: IndexedTx | null = await client.getTx(txHash).catch((e) => {
                 console.log(`Error getting tx ${txHash}: ${e}`)
                 return null
             })
+            
             if (!indexed) {
                 txIndex++
                 continue
             }
             await handleTx(indexed)
             txIndex++
+            */
         }
         const events: StringEvent[] = await client.getEndBlockEvents(block.header.height).catch((e) => {
             console.log(`Error getting block events ${block.header.height}: ${e}`)
@@ -86,8 +111,12 @@ export const createIndexer = async () => {
     }
 
     const handleTx = async (indexed: IndexedTx) => {
-        const rawLog: any = JSON.parse(indexed.rawLog)
-        const events: StringEvent[] = rawLog.flatMap((log: ABCIMessageLog) => log.events)
+        console.log("here")
+        //const rawLog: any = JSON.parse(indexed.rawLog)
+        console.log("here2")
+        // const events: StringEvent[] = rawLog.flatMap((log: ABCIMessageLog) => log.events)
+        const events: StringEvent[] = indexed.events.flatMap((log: ABCIMessageLog) => log.events)
+        console.log("here3")
         await handleEvents(events)
     }
 
@@ -137,8 +166,6 @@ process.on("SIGINT", () => {
         })
 })
 */
-
-
 
 /**
  * Script entrypoint
