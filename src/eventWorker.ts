@@ -1,6 +1,6 @@
 import { AppDBClient } from './database/appDBClient';
 import { BDDBClient } from './database/bcDBClient';
-import { EventEventFactory } from './range-sdk/event-event';
+import { EventEventFactory } from './range-sdk/event';
 import { StakeUnstakeProcessor } from './events/StakeUnstakeProccessor';
 
 

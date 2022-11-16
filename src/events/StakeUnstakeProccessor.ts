@@ -1,6 +1,6 @@
 import { logger } from '../helper/logger';
 import { Message } from '../range-sdk/message';
-import { EventEvent } from '../range-sdk/event-event';
+import { EventEvent } from '../range-sdk/event';
 import { EventRuleProcessor } from './eventRuleProcessor';
 
 export class StakeUnstakeProcessor extends EventRuleProcessor {

@@ -1,7 +1,7 @@
 import { AppDBClient } from '../database/appDBClient';
 import { BDDBClient } from '../database/bcDBClient';
 import { Message } from '../range-sdk/message';
-import { EventEventFactory } from '../range-sdk/event-event';
+import { EventEventFactory } from '../range-sdk/event';
 
 export abstract class EventRuleProcessor {
     constructor(
