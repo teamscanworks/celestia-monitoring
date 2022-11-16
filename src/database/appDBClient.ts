@@ -1,7 +1,7 @@
-import { AlertEvent } from '../alert/model/alert-event';
+
 import { SQLClient } from './client';
 import { EventEvent } from '../range-sdk/event';
-import { AlertRule } from '../alert/model/alert-rule';
+
 
 const TABLE_ALERT_RULE = 'public."AlertRule"';
 const TABLE_ALERT_EVENT = 'public."AlertEvent"';
@@ -18,10 +18,6 @@ export class AppDBClient extends SQLClient {
         super(process.env.APPDB_DATABASE_URL!);
     }
 
-    async getRules(): Promise<AlertRule[]> {
-        const { rows } = await this.sql(`SELECT * FROM ${TABLE_ALERT_RULE} WHERE enabled`);
-        return rows;
-    }
 
     async getAddressesForTags(tags: string[]): Promise<string[]> {
         const walletAddresses = await this.getWalletAddressesForTags(tags);
@@ -39,26 +35,6 @@ export class AppDBClient extends SQLClient {
         const stmnt = `SELECT address FROM ${TABLE_CONTRACT} WHERE tags && $1`;
         const { rows } = await this.sql(stmnt, [this.formatArrayParam(tags)]);
         return rows.map((a) => a.address);
-    }
-
-    async saveAlertEvents(events: AlertEvent[]) {
-        if (!events.length) {
-            return;
-        }
-        const stmnt = `INSERT INTO ${TABLE_ALERT_EVENT}("id", "alertRuleId", "txHash", "blockNumber", "network", "addressesInvolved", "details", "time") VALUES ($1, $2, $3, $4, $5, $6, $7, current_timestamp)`;
-        await Promise.all(
-            events.map((event) =>
-                this.sql(stmnt, [
-                    event.id,
-                    event.ruleId,
-                    event.txHash,
-                    event.blockNumber,
-                    event.network,
-                    event.addressesInvolved,
-                    JSON.stringify(event.details),
-                ]),
-            ),
-        );
     }
 
     async saveEventEvents(events: EventEvent[]) {
