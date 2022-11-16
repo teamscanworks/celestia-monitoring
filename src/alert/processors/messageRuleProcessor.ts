@@ -1,12 +1,12 @@
-import { AppDBClient } from '../../AppDBClient';
-import { Message } from '../../model/message';
+import { AppDBClient } from '../../database/appDBClient';
+import { Message } from '../../range-sdk/message';
 import { RuleOffsetManager } from '../RuleOffsetManager';
 import { AlertEvent, AlertEventFactory } from '../model/alert-event';
 import { AlertRule } from '../model/alert-rule';
 //import { NotificationManager } from '../notification/NotificationManager';
 import { RuleProcessor } from './RuleProcessor';
 import { logger } from '../../helper/logger';
-import { BDDBClientProvider } from '../../bcDBClientProvider';
+import { BDDBClientProvider } from '../../database/bcDBClientProvider';
 
 export abstract class MessageRuleProcessor implements RuleProcessor {
     constructor(

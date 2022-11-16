@@ -1,4 +1,4 @@
-import { AppDBClient } from '../AppDBClient';
+import { AppDBClient } from '../database/appDBClient';
 
 export interface RuleOffsetManager {
     commit(ruleId: string, offset: number): Promise<void>;

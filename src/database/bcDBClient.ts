@@ -1,7 +1,7 @@
-import { Block } from './model/block';
-import { Message } from './model/message';
-import { Transaction } from './model/transaction';
-import { SQLClient } from './sql/client';
+import { Block } from '../range-sdk/block';
+import { Message } from '../range-sdk/message';
+import { Transaction } from '../range-sdk/transaction';
+import { SQLClient } from './client';
 
 const TABLE_BLOCK = 'public."block"';
 const TABLE_MESSAGE = 'public."message"';

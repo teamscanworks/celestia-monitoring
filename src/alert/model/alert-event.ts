@@ -1,8 +1,8 @@
 import { randomUUID } from 'crypto';
 import LRUCache from 'lru-cache';
 import { AlertRule } from './alert-rule';
-import { Block } from '../../model/block';
-import { BDDBClientProvider } from '../../bcDBClientProvider';
+import { Block } from '../../range-sdk/block';
+import { BDDBClientProvider } from '../../database/bcDBClientProvider';
 
 export interface AlertEvent {
     id: string;

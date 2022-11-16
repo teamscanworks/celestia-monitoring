@@ -1,4 +1,4 @@
-import { Message } from '../../model/message';
+import { Message } from '../../range-sdk/message';
 import { BiOperator, getBiOperator } from '../../utils/operators/BiOperator';
 import { AlertEvent } from '../model/alert-event';
 import { AlertRule } from '../model/alert-rule';

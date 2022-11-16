@@ -1,7 +1,7 @@
-import { AppDBClient } from './appDBClient';
-import { BDDBClient } from './bcDBClient';
-import { EventEventFactory } from './event/model/event-event';
-import { StakeUnstakeProcessor } from './event/processors/StakeUnstakeProccessor';
+import { AppDBClient } from './database/appDBClient';
+import { BDDBClient } from './database/bcDBClient';
+import { EventEventFactory } from './range-sdk/event-event';
+import { StakeUnstakeProcessor } from './events/StakeUnstakeProccessor';
 
 
 export class EventWorker {

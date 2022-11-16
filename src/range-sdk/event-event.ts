@@ -1,7 +1,7 @@
 import { randomUUID } from 'crypto';
 import LRUCache from 'lru-cache';
-import { BDDBClient } from '../../bcDBClient';
-import { Block } from '../../model/block';
+import { BDDBClient } from '../database/bcDBClient';
+import { Block } from './block';
 
 export interface EventEvent {
     id: string;

@@ -1,7 +1,7 @@
-import { AlertEvent } from './alert/model/alert-event';
-import { SQLClient } from './sql/client';
-import { EventEvent } from './event/model/event-event';
-import { AlertRule } from './alert/model/alert-rule';
+import { AlertEvent } from '../alert/model/alert-event';
+import { SQLClient } from './client';
+import { EventEvent } from '../range-sdk/event-event';
+import { AlertRule } from '../alert/model/alert-rule';
 
 const TABLE_ALERT_RULE = 'public."AlertRule"';
 const TABLE_ALERT_EVENT = 'public."AlertEvent"';
