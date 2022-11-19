@@ -1,3 +1,5 @@
+import { randomUUID } from 'crypto';
+
 export interface Alert {
     id: string;
     network: string;
@@ -35,4 +37,30 @@ export enum AlertStatus {
     Active,
     Paused,
     Resolved,
+}
+
+export class AlertFactory {
+
+    static create(
+        network: string,
+        status: string,
+        type: AlertType,
+        severity: AlertSeverity,
+        addresses_invoved: string[],
+        parameters?: JSON,
+        createdAt?: Date,
+        enabled?: boolean,
+    ): Alert {
+        return {
+            id: randomUUID(),
+            network,
+            status,
+            type,
+            severity,
+            addresses_invoved,
+            parameters,
+            createdAt: createdAt || new Date(),
+            enabled: enabled || true,
+        };
+    }
 }

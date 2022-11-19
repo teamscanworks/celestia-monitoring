@@ -2,6 +2,7 @@ import { sha256 } from "@cosmjs/crypto"
 import 'dotenv/config';
 import { sleep } from './helper/sleep';
 import { logger } from './helper/logger';
+import { BlockWorker, TransactionWorker } from './worker';
 import { toHex } from "@cosmjs/encoding"
 import { Block, IndexedTx } from "@cosmjs/stargate"
 import { ABCIMessageLog, Attribute, StringEvent } from "cosmjs-types/cosmos/base/abci/v1beta1/abci"
@@ -28,10 +29,12 @@ export const createIndexer = async () => {
         console.log(`Connecting to ${rpcUrl}`);
         client = await IndexerStargateClient.connect(rpcUrl);
         console.log("Connected to chain-id:", await client.getChainId());
-        setTimeout(poll, 1000)
+        const blockWorker = new BlockWorker(0, []);
+        const transactionWorker = new TransactionWorker(0, []);
+        setTimeout(poll, 1000, blockWorker, transactionWorker) // todo call with worker arguments
     }
 
-    const poll = async () => {
+    const poll = async (blockWorker: BlockWorker, transactionWorker: TransactionWorker) => {
         const currentHeight = await client.getHeight()
         if (db.status.block.height <= currentHeight - 100)
             console.log(`Catching up ${db.status.block.height}..${currentHeight}`)
@@ -53,14 +56,21 @@ export const createIndexer = async () => {
             process.stdout.write(`Handling block: ${block.header.height}. Txs: ${block.txs.length}. Block events: ${blockEvents.length} Timestamp: ${block.header.time}`)
 
             // Handle the block
+            await blockWorker.process(block).catch((e) => {
+                console.log(`Error block-worker processing block ${processing}: ${e}`)
+            })
+
             await handleBlock(block)
             db.status.block.height = processing
         }
         await saveDb()
-        timer = setTimeout(poll, pollIntervalMs)
+        timer = setTimeout(poll, pollIntervalMs, blockWorker, transactionWorker)
     }
 
     const handleBlock = async (block: Block) => {
+
+        // TODO: Handle block alert rules here
+
         if (0 < block.txs.length) console.log("")
         let txIndex = 0
         while (txIndex < block.txs.length) {
@@ -73,6 +83,8 @@ export const createIndexer = async () => {
                 txIndex++
                 continue
             }
+            // TODO: Handle tx alert rules here
+
             await handleTx(indexed)
             txIndex++
         }
@@ -112,7 +124,6 @@ export const createIndexer = async () => {
     }
 
     const handleEventLog = async (event: StringEvent): Promise<void> => {
-        //const newId: string | undefined = getAttributeValueByKey(event.attributes, "game-index")
         console.log(`Event: ${event.type}`)
         console.log(`Attributes: ${JSON.stringify(event.attributes, null, '\t')}`)
     }

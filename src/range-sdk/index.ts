@@ -1,5 +1,4 @@
 import { Block } from "./block";
-import { Message } from "./message";
 import { Transaction } from "./transaction";
 
 interface RangeConfig {
@@ -10,7 +9,8 @@ interface RangeConfig {
 
 export {
     Block,
-    Message,
     RangeConfig,
     Transaction,
 };
+
+// TODO: aggregate exports here
