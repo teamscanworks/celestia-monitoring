@@ -11,6 +11,8 @@ import { writeFile } from "fs/promises"
 import { IndexerStargateClient } from "./range-sdk/client"
 import { getRangeConfig, getRpcUrl } from "./range-sdk/util"
 import { DbType } from "./database/types"
+import { HighNumberTxs } from "./rules/block/highNumberTxsRule";
+import { LargeTransfer } from "./rules/transaction/largeTransferRule";
 
 
 export const createIndexer = async () => {
@@ -29,9 +31,9 @@ export const createIndexer = async () => {
         console.log(`Connecting to ${rpcUrl}`);
         client = await IndexerStargateClient.connect(rpcUrl);
         console.log("Connected to chain-id:", await client.getChainId());
-        const blockWorker = new BlockWorker(0, []);
-        const transactionWorker = new TransactionWorker(0, []);
-        setTimeout(poll, 1000, blockWorker, transactionWorker) // todo call with worker arguments
+        const blockWorker = new BlockWorker(0, [new HighNumberTxs()]);
+        const transactionWorker = new TransactionWorker(0, [new LargeTransfer()]);
+        setTimeout(poll, 5000, blockWorker, transactionWorker)
     }
 
     const poll = async (blockWorker: BlockWorker, transactionWorker: TransactionWorker) => {
@@ -42,36 +44,45 @@ export const createIndexer = async () => {
             const processing = db.status.block.height + 1
             process.stdout.cursorTo(0)
             // Get the block
-            console.log(`Processing block ${processing}`)
+            // console.log(`Processing block ${processing}`)
             const block: Block = await client.getBlock(processing).catch((e) => {
                 console.log(`Error getting block ${processing}: ${e}`)
                 return block
             })
 
+            /*
+            // Process block events  
             const blockEvents: StringEvent[] = await client.getEndBlockEvents(processing).catch((e) => {
                 console.log(`Error getting block events ${processing}: ${e}`)
                 return []
             })
+            */
 
-            process.stdout.write(`Handling block: ${block.header.height}. Txs: ${block.txs.length}. Block events: ${blockEvents.length} Timestamp: ${block.header.time}`)
+            console.log(`Handling block: ${block.header.height}. Txs: ${block.txs.length}. Timestamp: ${block.header.time}`)
 
             // Handle the block
             await blockWorker.process(block).catch((e) => {
                 console.log(`Error block-worker processing block ${processing}: ${e}`)
             })
 
-            await handleBlock(block)
+            // extract transactions from block
+            const txs = await txsFromBlock(block);
+
+            // Handle the transactions
+            txs.forEach(async (tx) => {
+                await transactionWorker.process(tx).catch((e) => {
+                    console.log(`Error transaction-worker processing tx ${tx.hash}: ${e}`)
+                })
+            })
+
             db.status.block.height = processing
         }
         await saveDb()
         timer = setTimeout(poll, pollIntervalMs, blockWorker, transactionWorker)
     }
 
-    const handleBlock = async (block: Block) => {
-
-        // TODO: Handle block alert rules here
-
-        if (0 < block.txs.length) console.log("")
+    const txsFromBlock = async (block: Block): Promise<IndexedTx[]> => {
+        const txs: IndexedTx[] = []
         let txIndex = 0
         while (txIndex < block.txs.length) {
             const txHash: string = toHex(sha256(block.txs[txIndex])).toUpperCase()
@@ -83,73 +94,14 @@ export const createIndexer = async () => {
                 txIndex++
                 continue
             }
-            // TODO: Handle tx alert rules here
-
-            await handleTx(indexed)
+            txs.push(indexed)
             txIndex++
         }
-        const events: StringEvent[] = await client.getEndBlockEvents(block.header.height).catch((e) => {
-            console.log(`Error getting block events ${block.header.height}: ${e}`)
-            return []
-        })
-
-        if (0 < events.length) console.log("")
-        await handleEvents(events)
-    }
-
-    const handleTx = async (indexed: IndexedTx) => {
-        const rawLog: any = JSON.parse(indexed.rawLog)
-        const events: StringEvent[] = rawLog.flatMap((log: ABCIMessageLog) => log.events)
-        await handleEvents(events)
-    }
-
-    const handleEvents = async (events: StringEvent[]): Promise<void> => {
-        try {
-            let eventIndex = 0
-            while (eventIndex < events.length) {
-                await handleEvent(events[eventIndex])
-                eventIndex++
-            }
-        } catch (e) {
-            // Skipping if the handling failed. Most likely the transaction failed.
-        }
-    }
-
-    const handleEvent = async (event: StringEvent): Promise<void> => {
-        handleEventLog(event)
-    }
-
-    const getAttributeValueByKey = (attributes: Attribute[], key: string): string | undefined => {
-        return attributes.find((attribute: Attribute) => attribute.key === key)?.value
-    }
-
-    const handleEventLog = async (event: StringEvent): Promise<void> => {
-        console.log(`Event: ${event.type}`)
-        console.log(`Attributes: ${JSON.stringify(event.attributes, null, '\t')}`)
+        return txs
     }
 
     init()
 }
-
-
-/*
-process.on("SIGINT", () => {
-    if (timer) clearTimeout(timer)
-    saveDb()
-        .then(() => {
-            console.log(`${dbFile} saved`)
-        })
-        .catch(console.error)
-        .finally(() => {
-            server.close(() => {
-                console.log("server closed")
-                process.exit(0)
-            })
-        })
-})
-*/
-
-
 
 /**
  * Script entrypoint

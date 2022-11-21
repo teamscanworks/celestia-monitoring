@@ -41,13 +41,13 @@ export enum AlertStatus {
 
 export class AlertFactory {
 
-    static create(
+    public create(
         network: string,
         status: string,
         type: AlertType,
         severity: AlertSeverity,
         addresses_invoved: string[],
-        parameters?: JSON,
+        parameters?: any,
         createdAt?: Date,
         enabled?: boolean,
     ): Alert {

@@ -1,14 +1,14 @@
 import { RangeConfig } from ".";
 import { fromUtf8 } from "@cosmjs/encoding"
+import { Block, IndexedTx } from "@cosmjs/stargate"
 import { Attribute as TendermintAttribute, Event } from "@cosmjs/tendermint-rpc"
-import { Attribute, StringEvent } from "cosmjs-types/cosmos/base/abci/v1beta1/abci"
+import { Attribute, StringEvent, ABCIMessageLog } from "cosmjs-types/cosmos/base/abci/v1beta1/abci"
 
 export const getRpcUrl: () => string = () => {
     return process.env.RPC_URL || "https://rpc.limani.celestia-devops.dev" //https://rpc.mamaki.celestia.counterpoint.software" // ;
 };
 
 export const getRangeConfig: () => RangeConfig = () => {
-
     return {
         rpcUrl: getRpcUrl(),
         network: "arabica", // mamaki or arabica
@@ -28,4 +28,15 @@ export const convertTendermintEvents = (events: readonly Event[]): StringEvent[]
             ),
         }),
     )
+}
+
+export const parseIndexedTxEvents = (indexed: IndexedTx): StringEvent[] => {
+    const rawLog: any = JSON.parse(indexed.rawLog)
+    const events: StringEvent[] = rawLog.flatMap((log: ABCIMessageLog) => log.events)
+    return events
+}
+
+
+const getAttributeValueByKey = (attributes: Attribute[], key: string): string | undefined => {
+    return attributes.find((attribute: Attribute) => attribute.key === key)?.value
 }
