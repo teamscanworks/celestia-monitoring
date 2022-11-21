@@ -1,10 +1,10 @@
 import { Block, IndexedTx } from '@cosmjs/stargate';
 import { TransactionRule } from './transactionRule';
 import { AlertFactory, AlertType, AlertSeverity } from '../../range-sdk/alert';
-import { parseIndexedTxEvents } from '../../range-sdk/util';
+import { parseIndexedTxEvents, getAttributeValueByKey, resolveAmount } from '../../range-sdk/util';
 
 export class LargeTransfer extends TransactionRule {
-    constructor() {
+    constructor() { // TODO: add amount threshold and severity as constructor parameters
         super();
     }
 
@@ -19,10 +19,23 @@ export class LargeTransfer extends TransactionRule {
             console.log(`Attributes: ${JSON.stringify(event.attributes, null, '\t')}`)
         });
 
+        // find the transfer event
+        const transferEvent = events.find((event) => event.type === 'transfer');
 
-        console.log(JSON.stringify(alert));
+        if (transferEvent) {
+            const amount = getAttributeValueByKey(transferEvent.attributes, 'amount');
+            console.log(`Amount: ${amount}`);
 
+            if (amount) {
+                const { value, denom } = resolveAmount(amount);
 
+                console.log(`Amount value: ${value}`);
+                console.log(`Amount denom: ${denom}`);
+
+                console.log(JSON.stringify(alert));
+
+            }
+        }
     }
 
     getRuleDescription(): string {

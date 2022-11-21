@@ -1,15 +1,12 @@
 import { sha256 } from "@cosmjs/crypto"
 import 'dotenv/config';
-import { sleep } from './helper/sleep';
 import { logger } from './helper/logger';
 import { BlockWorker, TransactionWorker } from './worker';
 import { toHex } from "@cosmjs/encoding"
 import { Block, IndexedTx } from "@cosmjs/stargate"
-import { ABCIMessageLog, Attribute, StringEvent } from "cosmjs-types/cosmos/base/abci/v1beta1/abci"
-import { config } from "dotenv"
 import { writeFile } from "fs/promises"
 import { IndexerStargateClient } from "./range-sdk/client"
-import { getRangeConfig, getRpcUrl } from "./range-sdk/util"
+import { getRpcUrl } from "./range-sdk/util"
 import { DbType } from "./database/types"
 import { HighNumberTxs } from "./rules/block/highNumberTxsRule";
 import { LargeTransfer } from "./rules/transaction/largeTransferRule";

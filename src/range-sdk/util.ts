@@ -37,6 +37,13 @@ export const parseIndexedTxEvents = (indexed: IndexedTx): StringEvent[] => {
 }
 
 
-const getAttributeValueByKey = (attributes: Attribute[], key: string): string | undefined => {
+export const getAttributeValueByKey = (attributes: Attribute[], key: string): string | undefined => {
     return attributes.find((attribute: Attribute) => attribute.key === key)?.value
+}
+
+export const resolveAmount = (amount: string): { value: number, denom: string } => {
+    const amountParts = amount.split('u');
+    const amountValue = parseFloat(amountParts[0]) / 1_000_000;
+    const amountDenom = amountParts[1].toUpperCase();
+    return { value: amountValue, denom: amountDenom };
 }
