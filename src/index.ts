@@ -4,6 +4,7 @@ import { logger } from './helper/logger';
 import { BlockWorker, TransactionWorker } from './worker';
 import { toHex } from "@cosmjs/encoding"
 import { Block, IndexedTx } from "@cosmjs/stargate"
+import { StringEvent } from "cosmjs-types/cosmos/base/abci/v1beta1/abci"
 import { writeFile } from "fs/promises"
 import { IndexerStargateClient } from "./range-sdk/client"
 import { getRpcUrl } from "./range-sdk/util"
@@ -12,6 +13,7 @@ import { HighNumberTxs } from "./rules/block/highNumberTxsRule";
 import { LargeTransfer } from "./rules/transaction/largeTransferRule";
 import { CommunityPoolSpend } from "./rules/transaction/communityPoolSpend";
 import { SubmitGovProposal } from "./rules/transaction/submitGovProposal";
+import { QGBAttestationRequest } from "./rules/block/QGBAttestationRequest";
 import { AlertSeverity } from "./range-sdk/alert";
 
 
@@ -31,14 +33,17 @@ export const createIndexer = async () => {
         console.log(`Connecting to ${rpcUrl}`);
         client = await IndexerStargateClient.connect(rpcUrl);
         console.log("Connected to chain-id:", await client.getChainId());
-        const blockWorker = new BlockWorker(0, [new HighNumberTxs()]);
+        const blockWorker = new BlockWorker(0, [
+            new HighNumberTxs(),
+            new QGBAttestationRequest(AlertSeverity.Info)
+        ]);
         const transactionWorker = new TransactionWorker(0, [
             new LargeTransfer(1, AlertSeverity.Info),
             new LargeTransfer(100, AlertSeverity.Low),
             new LargeTransfer(1000, AlertSeverity.Medium),
             new LargeTransfer(10000, AlertSeverity.High),
             new CommunityPoolSpend(AlertSeverity.Info),
-            new SubmitGovProposal(AlertSeverity.Info)
+            new SubmitGovProposal(AlertSeverity.Info),
         ]);
         setTimeout(poll, 5000, blockWorker, transactionWorker)
     }
@@ -51,24 +56,21 @@ export const createIndexer = async () => {
             const processing = db.status.block.height + 1
             process.stdout.cursorTo(0)
             // Get the block
-            // console.log(`Processing block ${processing}`)
             const block: Block = await client.getBlock(processing).catch((e) => {
                 console.log(`Error getting block ${processing}: ${e}`)
                 return block
             })
 
-            /*
             // Process block events  
             const blockEvents: StringEvent[] = await client.getEndBlockEvents(processing).catch((e) => {
                 console.log(`Error getting block events ${processing}: ${e}`)
                 return []
             })
-            */
 
             console.log(`Handling block: ${block.header.height}. Txs: ${block.txs.length}. Timestamp: ${block.header.time}`)
 
             // Handle the block
-            await blockWorker.process(block).catch((e) => {
+            await blockWorker.process(block, blockEvents).catch((e) => {
                 console.log(`Error block-worker processing block ${processing}: ${e}`)
             })
 

@@ -34,9 +34,7 @@ export class CommunityPoolSpend extends TransactionRule {
                     true
                 );
 
-                // TODO: create a print function for alerts
-                console.log(`${this.severity.toString()} ALERT: ${this.getRuleName()} type. ${this.getRuleDescription()}`);
-                console.log(JSON.stringify(alert, null, 2));
+                factory.pprint(alert, this.getRuleName(), this.getRuleDescription());
             }
         }
     }

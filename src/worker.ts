@@ -1,5 +1,6 @@
 import { AlertFactory } from './range-sdk/alert';
 import { Block, IndexedTx } from "@cosmjs/stargate"
+import { StringEvent } from "cosmjs-types/cosmos/base/abci/v1beta1/abci"
 import { BlockRule } from './rules/block/blockRule';
 import { TransactionRule } from './rules/transaction/transactionRule';
 
@@ -16,9 +17,9 @@ export class BlockWorker {
         this.alertFactory = new AlertFactory();
     }
 
-    async process(block: Block): Promise<void> {
+    async process(block: Block, events: StringEvent[]): Promise<void> {
 
-        await Promise.all(this.alertRules.map((blockRule) => blockRule.handle(block, this.alertFactory)));
+        await Promise.all(this.alertRules.map((blockRule) => blockRule.handle(block, events, this.alertFactory)));
     }
 }
 

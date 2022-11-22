@@ -1,4 +1,5 @@
 import { Block } from '@cosmjs/stargate';
+import { StringEvent } from "cosmjs-types/cosmos/base/abci/v1beta1/abci"
 import { BlockRule } from './blockRule';
 import { AlertFactory, AlertType, AlertSeverity } from '../../range-sdk/alert';
 
@@ -7,7 +8,7 @@ export class HighNumberTxs extends BlockRule {
         super();
     }
 
-    async handle(block: Block, factory: AlertFactory): Promise<void> {
+    async handle(block: Block, events: StringEvent[], factory: AlertFactory): Promise<void> {
         console.log("Processing HighNumberTxsBlock for block " + block.header.height);
         if (block.txs.length > 10) {
             const alert = factory.create(
