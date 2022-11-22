@@ -1,6 +1,6 @@
 import { Block } from '@cosmjs/stargate';
 import { StringEvent } from "cosmjs-types/cosmos/base/abci/v1beta1/abci"
-import { Rule } from '../rule';
+import { Rule } from '../../range-sdk/rule';
 import { AlertFactory } from '../../range-sdk/alert';
 
 

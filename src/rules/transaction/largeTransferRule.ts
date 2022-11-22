@@ -14,14 +14,6 @@ export class LargeTransfer extends TransactionRule {
 
         const events = parseIndexedTxEvents(transaction);
 
-        // log all events
-        /*
-        events.forEach((event) => {
-            console.log(`Event: ${event.type}`)
-            console.log(`Attributes: ${JSON.stringify(event.attributes, null, '\t')}`)
-        });
-        */
-
         // find the transfer event
         const transferEvent = events.find((event) => event.type === 'transfer');
 

@@ -1,6 +1,6 @@
 import { IndexedTx } from '@cosmjs/stargate';
 import { AlertFactory } from '../../range-sdk/alert';
-import { Rule } from '../rule';
+import { Rule } from '../../range-sdk/rule';
 
 export abstract class TransactionRule extends Rule {
     constructor() {
