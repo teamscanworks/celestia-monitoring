@@ -10,6 +10,8 @@ export class SubmitGovProposal extends TransactionRule {
 
     async handle(transaction: IndexedTx, factory: AlertFactory): Promise<void> {
 
+        console.log("Processing SubmitGovProposal for tx " + transaction.hash);
+
         const events = parseIndexedTxEvents(transaction);
 
         // find the transfer event

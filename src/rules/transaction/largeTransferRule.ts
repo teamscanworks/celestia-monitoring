@@ -1,4 +1,5 @@
 import { IndexedTx } from '@cosmjs/stargate';
+import { green } from 'chalk'
 import { TransactionRule } from './transactionRule';
 import { AlertFactory, AlertType, AlertSeverity } from '../../range-sdk/alert';
 import { parseIndexedTxEvents, getAttributeValueByKey, resolveAmount } from '../../range-sdk/util';
@@ -9,7 +10,7 @@ export class LargeTransfer extends TransactionRule {
     }
 
     async handle(transaction: IndexedTx, factory: AlertFactory): Promise<void> {
-        console.log("Processing LargeTransfer for tx " + transaction.hash);
+        console.log(`Processing LargeTransfer ${this.severity}  for tx ${transaction.hash}`);
 
         const events = parseIndexedTxEvents(transaction);
 
@@ -54,9 +55,7 @@ export class LargeTransfer extends TransactionRule {
 
                     );
 
-                    // TODO: create a print function for alerts
-                    console.log(`${alert.severity.toString()} ALERT: ${this.getRuleName()} type. ${this.getRuleDescription()}`);
-                    console.log(JSON.stringify(alert, null, 2));
+                    factory.pprint(alert, this.getRuleName(), this.getRuleDescription());
                 }
             }
         }
