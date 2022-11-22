@@ -3,6 +3,7 @@ import 'dotenv/config';
 import { logger } from './helper/logger';
 import { BlockWorker, TransactionWorker } from './worker';
 import { toHex } from "@cosmjs/encoding"
+import { cyan } from "chalk";
 import { Block, IndexedTx } from "@cosmjs/stargate"
 import { StringEvent } from "cosmjs-types/cosmos/base/abci/v1beta1/abci"
 import { writeFile } from "fs/promises"
@@ -67,7 +68,7 @@ export const createIndexer = async () => {
                 return []
             })
 
-            console.log(`Handling block: ${block.header.height}. Txs: ${block.txs.length}. Timestamp: ${block.header.time}`)
+            console.log(cyan(`Handling block: ${block.header.height}. Txs: ${block.txs.length}. Timestamp: ${block.header.time}`))
 
             // Handle the block
             await blockWorker.process(block, blockEvents).catch((e) => {
