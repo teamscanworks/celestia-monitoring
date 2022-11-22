@@ -15,6 +15,7 @@ import { LargeTransfer } from "./rules/transaction/largeTransferRule";
 import { CommunityPoolSpend } from "./rules/transaction/communityPoolSpend";
 import { SubmitGovProposal } from "./rules/transaction/submitGovProposal";
 import { QGBAttestationRequest } from "./rules/block/QGBAttestationRequest";
+import { LargeUnstake } from "./rules/transaction/unstakeRule";
 import { AlertSeverity } from "./range-sdk/alert";
 
 
@@ -43,6 +44,9 @@ export const createIndexer = async () => {
             new LargeTransfer(100, AlertSeverity.Low),
             new LargeTransfer(1000, AlertSeverity.Medium),
             new LargeTransfer(10000, AlertSeverity.High),
+            new LargeUnstake(100, AlertSeverity.Low),
+            new LargeUnstake(1000, AlertSeverity.Medium),
+            new LargeUnstake(10000, AlertSeverity.High),
             new CommunityPoolSpend(AlertSeverity.Info),
             new SubmitGovProposal(AlertSeverity.Info),
         ]);
