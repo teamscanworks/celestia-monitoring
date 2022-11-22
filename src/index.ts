@@ -10,6 +10,7 @@ import { getRpcUrl } from "./range-sdk/util"
 import { DbType } from "./database/types"
 import { HighNumberTxs } from "./rules/block/highNumberTxsRule";
 import { LargeTransfer } from "./rules/transaction/largeTransferRule";
+import { CommunityPoolSpend } from "./rules/transaction/communityPoolSpend";
 import { AlertSeverity } from "./range-sdk/alert";
 
 
@@ -35,6 +36,7 @@ export const createIndexer = async () => {
             new LargeTransfer(100, AlertSeverity.Low),
             new LargeTransfer(1000, AlertSeverity.Medium),
             new LargeTransfer(10000, AlertSeverity.High),
+            new CommunityPoolSpend(AlertSeverity.Info)
 
         ]);
         setTimeout(poll, 5000, blockWorker, transactionWorker)
