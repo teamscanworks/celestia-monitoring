@@ -30,7 +30,13 @@ export const createIndexer = async () => {
         client = await IndexerStargateClient.connect(rpcUrl);
         console.log("Connected to chain-id:", await client.getChainId());
         const blockWorker = new BlockWorker(0, [new HighNumberTxs()]);
-        const transactionWorker = new TransactionWorker(0, [new LargeTransfer(1, AlertSeverity.Info)]);
+        const transactionWorker = new TransactionWorker(0, [
+            new LargeTransfer(1, AlertSeverity.Info),
+            new LargeTransfer(100, AlertSeverity.Low),
+            new LargeTransfer(1000, AlertSeverity.Medium),
+            new LargeTransfer(10000, AlertSeverity.High),
+
+        ]);
         setTimeout(poll, 5000, blockWorker, transactionWorker)
     }
 
