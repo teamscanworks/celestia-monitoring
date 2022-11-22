@@ -10,6 +10,7 @@ import { getRpcUrl } from "./range-sdk/util"
 import { DbType } from "./database/types"
 import { HighNumberTxs } from "./rules/block/highNumberTxsRule";
 import { LargeTransfer } from "./rules/transaction/largeTransferRule";
+import { AlertSeverity } from "./range-sdk/alert";
 
 
 export const createIndexer = async () => {
@@ -29,7 +30,7 @@ export const createIndexer = async () => {
         client = await IndexerStargateClient.connect(rpcUrl);
         console.log("Connected to chain-id:", await client.getChainId());
         const blockWorker = new BlockWorker(0, [new HighNumberTxs()]);
-        const transactionWorker = new TransactionWorker(0, [new LargeTransfer()]);
+        const transactionWorker = new TransactionWorker(0, [new LargeTransfer(1, AlertSeverity.Info)]);
         setTimeout(poll, 5000, blockWorker, transactionWorker)
     }
 

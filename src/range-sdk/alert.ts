@@ -13,23 +13,23 @@ export interface Alert {
 }
 
 export enum AlertSeverity {
-    Unknown,
-    Info,
-    Low,
-    Medium,
-    High,
-    Critical,
+    Unknown = 'UNKNOWN',
+    Info = 'INFO',
+    Low = 'LOW',
+    Medium = 'MEDIUM',
+    High = 'HIGH',
+    Critical = 'CRITICAL',
 }
 
 export enum AlertType {
-    Unknown,
-    Block,
-    Transaction,
-    Message,
-    Event,
-    Info,
-    Issue,
-    Exploit,
+    Unknown = 'UNKNOWN',
+    Block = 'BLOCK',
+    Transaction = 'TRANSACTION',
+    Message = 'MESSAGE',
+    Event = 'EVENT',
+    Info = 'INFO',
+    Issue = 'ISSUE',
+    Exploit = 'EXPLOIT',
 }
 
 export enum AlertStatus {

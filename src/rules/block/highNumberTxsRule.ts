@@ -14,7 +14,7 @@ export class HighNumberTxs extends BlockRule {
                 'arabica',
                 'active',
                 AlertType.Block,
-                AlertSeverity.High,
+                AlertSeverity.Info,
                 [],
                 {
                     blockHeight: block.header.height,

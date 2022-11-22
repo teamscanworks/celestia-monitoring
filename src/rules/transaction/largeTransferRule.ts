@@ -1,10 +1,10 @@
-import { Block, IndexedTx } from '@cosmjs/stargate';
+import { IndexedTx } from '@cosmjs/stargate';
 import { TransactionRule } from './transactionRule';
 import { AlertFactory, AlertType, AlertSeverity } from '../../range-sdk/alert';
 import { parseIndexedTxEvents, getAttributeValueByKey, resolveAmount } from '../../range-sdk/util';
 
 export class LargeTransfer extends TransactionRule {
-    constructor() { // TODO: add amount threshold and severity as constructor parameters
+    constructor(private threshold: number, private severity: AlertSeverity) {
         super();
     }
 
@@ -14,32 +14,56 @@ export class LargeTransfer extends TransactionRule {
         const events = parseIndexedTxEvents(transaction);
 
         // log all events
+        /*
         events.forEach((event) => {
             console.log(`Event: ${event.type}`)
             console.log(`Attributes: ${JSON.stringify(event.attributes, null, '\t')}`)
         });
+        */
 
         // find the transfer event
         const transferEvent = events.find((event) => event.type === 'transfer');
 
         if (transferEvent) {
             const amount = getAttributeValueByKey(transferEvent.attributes, 'amount');
-            console.log(`Amount: ${amount}`);
+            const sender = getAttributeValueByKey(transferEvent.attributes, 'sender') || '';
+            const recipient = getAttributeValueByKey(transferEvent.attributes, 'recipient') || '';
 
             if (amount) {
                 const { value, denom } = resolveAmount(amount);
 
-                console.log(`Amount value: ${value}`);
-                console.log(`Amount denom: ${denom}`);
+                if (value > this.threshold && denom === 'TIA') {
+                    const alert = factory.create(
+                        'arabica',
+                        'active',
+                        AlertType.Transaction,
+                        this.severity,
+                        [
+                            sender,
+                            recipient
+                        ],
+                        {
+                            txHash: transaction.hash,
+                            amount: value,
+                            denom: denom,
+                            sender: sender,
+                            recipient: recipient
+                        },
+                        new Date(),
+                        true
 
-                console.log(JSON.stringify(alert));
+                    );
 
+                    // TODO: create a print function for alerts
+                    console.log(`${alert.severity.toString()} ALERT: ${this.getRuleName()} type. ${this.getRuleDescription()}`);
+                    console.log(JSON.stringify(alert, null, 2));
+                }
             }
         }
     }
 
     getRuleDescription(): string {
-        return 'A large transfer of TIA has occured';
+        return 'A transaction with a transfer of more than ' + this.threshold + ' TIA was found';
     }
 
     getRuleName(): string {
