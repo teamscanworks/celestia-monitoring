@@ -36,6 +36,12 @@ export const parseIndexedTxEvents = (indexed: IndexedTx): StringEvent[] => {
     return events
 }
 
+export const parseBlockEvents = (indexed: IndexedTx): StringEvent[] => {
+    const rawLog: any = JSON.parse(indexed.rawLog)
+    const events: StringEvent[] = rawLog.flatMap((log: ABCIMessageLog) => log.events)
+    return events
+}
+
 
 export const getAttributeValueByKey = (attributes: Attribute[], key: string): string | undefined => {
     return attributes.find((attribute: Attribute) => attribute.key === key)?.value
