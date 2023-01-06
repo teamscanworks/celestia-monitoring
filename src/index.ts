@@ -14,6 +14,7 @@ import { DbType } from "./database/types";
 import { HighNumberTxs } from "./rules/block/highNumberTxsRule";
 import { LargeTransfer } from "./rules/transaction/largeTransferRule";
 import { LargeDelegation } from "./rules/transaction/largeDelegationRule";
+import { LargeRedelegation } from "./rules/transaction/largeRedelegationRule";
 import { CommunityPoolSpend } from "./rules/transaction/communityPoolSpend";
 import { SubmitGovProposal } from "./rules/transaction/submitGovProposal";
 import { NewValidatorRule } from "./rules/transaction/newValidator";
@@ -55,6 +56,10 @@ export const createIndexer = async () => {
             new LargeDelegation(100, AlertSeverity.Low),
             new LargeDelegation(1000, AlertSeverity.Medium),
             new LargeDelegation(10000, AlertSeverity.High),
+            new LargeRedelegation(10, AlertSeverity.Info),
+            new LargeRedelegation(100, AlertSeverity.Low),
+            new LargeRedelegation(1000, AlertSeverity.Medium),
+            new LargeRedelegation(10000, AlertSeverity.High),
             new LargeUnstake(10, AlertSeverity.Info),
             new LargeUnstake(100, AlertSeverity.Low),
             new LargeUnstake(1000, AlertSeverity.Medium),
