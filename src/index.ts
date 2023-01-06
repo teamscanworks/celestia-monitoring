@@ -15,6 +15,7 @@ import { LargeTransfer } from "./rules/transaction/largeTransferRule";
 import { CommunityPoolSpend } from "./rules/transaction/communityPoolSpend";
 import { SubmitGovProposal } from "./rules/transaction/submitGovProposal";
 import { NewValidatorRule } from "./rules/transaction/newValidator";
+import { EditValidatorRule } from "./rules/transaction/editValidatorRule";
 import { DoubleSignEvidence } from "./rules/transaction/doubleSignEvidenceRule";
 import { SoftwareUpgradeRule } from "./rules/transaction/softwareUpgradeRule";
 import { QGBAttestationRequest } from "./rules/block/QGBAttestationRequest";
@@ -53,6 +54,7 @@ export const createIndexer = async () => {
             new CommunityPoolSpend(AlertSeverity.Info),
             new SubmitGovProposal(AlertSeverity.Info),
             new NewValidatorRule(AlertSeverity.Info),
+            new EditValidatorRule(AlertSeverity.Low),
             new SoftwareUpgradeRule(AlertSeverity.Low),
             new DoubleSignEvidence(AlertSeverity.High)
         ]);
