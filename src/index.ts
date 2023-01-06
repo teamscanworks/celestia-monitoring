@@ -1,15 +1,16 @@
-import { sha256 } from "@cosmjs/crypto"
+import { sha256 } from "@cosmjs/crypto";
 import 'dotenv/config';
 import { logger } from './helper/logger';
 import { BlockWorker, TransactionWorker } from './worker';
-import { toHex } from "@cosmjs/encoding"
+import { toHex } from "@cosmjs/encoding";
 import { cyan } from "chalk";
-import { Block, IndexedTx } from "@cosmjs/stargate"
-import { StringEvent } from "cosmjs-types/cosmos/base/abci/v1beta1/abci"
-import { writeFile } from "fs/promises"
-import { IndexerStargateClient } from "./range-sdk/client"
-import { getRpcUrl } from "./range-sdk/util"
-import { DbType } from "./database/types"
+import { Block, IndexedTx } from "@cosmjs/stargate";
+import { StringEvent } from "cosmjs-types/cosmos/base/abci/v1beta1/abci";
+import { writeFile } from "fs/promises";
+import { IndexerStargateClient } from "./range-sdk/client";
+import { getRpcUrl } from "./range-sdk/util";
+import { AlertSeverity } from "./range-sdk/alert";
+import { DbType } from "./database/types";
 import { HighNumberTxs } from "./rules/block/highNumberTxsRule";
 import { LargeTransfer } from "./rules/transaction/largeTransferRule";
 import { LargeDelegation } from "./rules/transaction/largeDelegationRule";
@@ -17,11 +18,12 @@ import { CommunityPoolSpend } from "./rules/transaction/communityPoolSpend";
 import { SubmitGovProposal } from "./rules/transaction/submitGovProposal";
 import { NewValidatorRule } from "./rules/transaction/newValidator";
 import { EditValidatorRule } from "./rules/transaction/editValidatorRule";
+import { ValidatorUnjailed } from "./rules/transaction/validatorUnjailed";
 import { DoubleSignEvidence } from "./rules/transaction/doubleSignEvidenceRule";
 import { SoftwareUpgradeRule } from "./rules/transaction/softwareUpgradeRule";
 import { QGBAttestationRequest } from "./rules/block/QGBAttestationRequest";
 import { LargeUnstake } from "./rules/transaction/unstakeRule";
-import { AlertSeverity } from "./range-sdk/alert";
+
 
 
 export const createIndexer = async () => {
@@ -61,7 +63,8 @@ export const createIndexer = async () => {
             new SubmitGovProposal(AlertSeverity.Info),
             new NewValidatorRule(AlertSeverity.Info),
             new EditValidatorRule(AlertSeverity.Low),
-            new SoftwareUpgradeRule(AlertSeverity.Low),
+            new ValidatorUnjailed(AlertSeverity.Low),
+            new SoftwareUpgradeRule(AlertSeverity.Medium),
             new DoubleSignEvidence(AlertSeverity.High)
         ]);
         setTimeout(poll, 5000, blockWorker, transactionWorker)
