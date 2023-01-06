@@ -12,6 +12,7 @@ import { getRpcUrl } from "./range-sdk/util"
 import { DbType } from "./database/types"
 import { HighNumberTxs } from "./rules/block/highNumberTxsRule";
 import { LargeTransfer } from "./rules/transaction/largeTransferRule";
+import { LargeDelegation } from "./rules/transaction/largeDelegationRule";
 import { CommunityPoolSpend } from "./rules/transaction/communityPoolSpend";
 import { SubmitGovProposal } from "./rules/transaction/submitGovProposal";
 import { NewValidatorRule } from "./rules/transaction/newValidator";
@@ -44,10 +45,15 @@ export const createIndexer = async () => {
             new QGBAttestationRequest(AlertSeverity.Info)
         ]);
         const transactionWorker = new TransactionWorker(0, [
-            new LargeTransfer(1, AlertSeverity.Info),
+            new LargeTransfer(10, AlertSeverity.Info),
             new LargeTransfer(100, AlertSeverity.Low),
             new LargeTransfer(1000, AlertSeverity.Medium),
             new LargeTransfer(10000, AlertSeverity.High),
+            new LargeDelegation(10, AlertSeverity.Info),
+            new LargeDelegation(100, AlertSeverity.Low),
+            new LargeDelegation(1000, AlertSeverity.Medium),
+            new LargeDelegation(10000, AlertSeverity.High),
+            new LargeUnstake(10, AlertSeverity.Info),
             new LargeUnstake(100, AlertSeverity.Low),
             new LargeUnstake(1000, AlertSeverity.Medium),
             new LargeUnstake(10000, AlertSeverity.High),

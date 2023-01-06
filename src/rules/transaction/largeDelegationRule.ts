@@ -3,23 +3,22 @@ import { TransactionRule } from './transactionRule';
 import { AlertFactory, AlertType, AlertSeverity } from '../../range-sdk/alert';
 import { parseIndexedTxEvents, getAttributeValueByKey, resolveAmount } from '../../range-sdk/util';
 
-export class LargeTransfer extends TransactionRule {
+export class LargeDelegation extends TransactionRule {
     constructor(private threshold: number, private severity: AlertSeverity) {
         super();
     }
 
     async handle(transaction: IndexedTx, factory: AlertFactory): Promise<void> {
-        console.log(`Processing LargeTransfer ${this.severity}  for tx ${transaction.hash}`);
+        console.log(`Processing LargeDelegation ${this.severity}  for tx ${transaction.hash}`);
 
         const events = parseIndexedTxEvents(transaction);
 
-        // find the transfer event
-        const transferEvent = events.find((event) => event.type === 'transfer');
+        // find the delegation event
+        const transferEvent = events.find((event) => event.type === 'delegate');
 
         if (transferEvent) {
             const amount = getAttributeValueByKey(transferEvent.attributes, 'amount');
-            const sender = getAttributeValueByKey(transferEvent.attributes, 'sender') || '';
-            const recipient = getAttributeValueByKey(transferEvent.attributes, 'recipient') || '';
+            const validator = getAttributeValueByKey(transferEvent.attributes, 'validator') || '';
 
             if (amount) {
                 const { value, denom } = resolveAmount(amount);
@@ -31,15 +30,13 @@ export class LargeTransfer extends TransactionRule {
                         AlertType.Transaction,
                         this.severity,
                         [
-                            sender,
-                            recipient
+                            validator
                         ],
                         {
                             txHash: transaction.hash,
                             amount: value,
                             denom: denom,
-                            sender: sender,
-                            recipient: recipient
+                            validator: validator
                         },
                         new Date(),
                         true
@@ -53,10 +50,10 @@ export class LargeTransfer extends TransactionRule {
     }
 
     getRuleDescription(): string {
-        return 'A transaction with a transfer of more than ' + this.threshold + ' TIA was found';
+        return 'A delegation of more than ' + this.threshold + ' TIA was found';
     }
 
     getRuleName(): string {
-        return 'LargeTransfer';
+        return 'LargeDelegation';
     }
 }
