@@ -5,13 +5,16 @@ import { Attribute as TendermintAttribute, Event } from "@cosmjs/tendermint-rpc"
 import { Attribute, StringEvent, ABCIMessageLog } from "cosmjs-types/cosmos/base/abci/v1beta1/abci"
 
 export const getRpcUrl: () => string = () => {
-    return process.env.RPC_URL || "https://rpc.limani.celestia-devops.dev" //https://rpc.mamaki.celestia.counterpoint.software" // ;
+    return process.env.RPC_URL || "https://rpc-mocha.pops.one" //"https://rpc.limani.celestia-devops.dev";
 };
+
+// height of arabica: 1500000
+// height of mocha: 1400000
 
 export const getRangeConfig: () => RangeConfig = () => {
     return {
         rpcUrl: getRpcUrl(),
-        network: "arabica", // mamaki or arabica
+        network: "arabica", // mocha or arabica
         chainId: 1,
     };
 };
