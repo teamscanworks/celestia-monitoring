@@ -37,10 +37,17 @@ These are the alert rules we have implemented so far, using the `range-sdk`:
 
 ### Transaction Rules
 
-- **LargeTransfer**. Alert rule that triggers when there is a `TIA` transfer with value above a certain threshold.
-- **Unstake**. Alert rule that triggers when there is an `undelegate` event above a certain threshold, that may compromise the economic security of the chain.
-- **GovProposal.** Alert rule that triggers when there is a new Governance proposal in Celestia.
-- **CommunityPoolSpend.** Alert rule that triggers when there is a new spend tx from the Community Pool.
+- **LargeTransfer**. Alert rule that triggers when there is a `TIA` transfer with value above a certain threshold. [INFO, LOW, MEDIUM, HIGH] depending on the amount transferred.
+- **LargeDelegation**. Alert rule that triggers when a large delegation (staking) event occurs. [INFO, LOW, MEDIUM, HIGH] depending on the alert threshold of the amount delegated.
+- **LargeRedelegation**. Alert rule that triggers when a large redelegation occurs. [INFO, LOW, MEDIUM, HIGH] depending on the amount of TIA redelegated.
+- **LargeUnstake**. Alert rule that triggers when there is an `undelegate` event above a certain threshold, that may compromise the economic security of the chain. [INFO, LOW, MEDIUM, HIGH] depending on the amount of TIA unstaked.
+- **CommunityPoolSpend.** Alert rule that triggers when there is a new spend tx from the Community Pool. [INFO]
+- **GovProposal.** Alert rule that triggers when there is a new Governance proposal in Celestia. [INFO]
+- **NewValidator.** Alert rule that triggers when a new validator is created in the Celestia blockchain. [INFO]
+- **EditValidator.** Alert rule that triggers when the config parameters of a validator have changed. [LOW]
+- **ValidatorUnjailed.** Alert rule that triggers when a validator is unjailed. [LOW]
+- **SoftwareUpgrade.** Alert rule that triggers when the Celestia blockchain starts a version upgrade. [MEDIUM]
+- **DoubleSignEvidence.** Alert rule that triggers when a double-sign evidence is detected. [HIGH]
 
 
 ## CLI
