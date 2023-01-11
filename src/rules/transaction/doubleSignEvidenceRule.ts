@@ -23,7 +23,7 @@ export class DoubleSignEvidence extends TransactionRule {
 
             if (action === '/cosmos.evidence.v1beta1.MsgSubmitEvidence') {
                 const alert = factory.create(
-                    'arabica',
+                    'mocha',
                     'active',
                     AlertType.Message,
                     this.severity,

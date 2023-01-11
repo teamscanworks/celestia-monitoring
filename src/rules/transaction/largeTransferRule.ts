@@ -26,7 +26,7 @@ export class LargeTransfer extends TransactionRule {
 
                 if (value > this.threshold && denom === 'TIA') {
                     const alert = factory.create(
-                        'arabica',
+                        'mocha',
                         'active',
                         AlertType.Transaction,
                         this.severity,

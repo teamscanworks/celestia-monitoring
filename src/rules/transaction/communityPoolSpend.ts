@@ -21,7 +21,7 @@ export class CommunityPoolSpend extends TransactionRule {
             const action = getAttributeValueByKey(message.attributes, 'action');
             if (action === '/cosmos.distribution.v1beta1.MsgCommunityPoolSpend') {
                 const alert = factory.create(
-                    'arabica',
+                    'mocha',
                     'active',
                     AlertType.Message,
                     this.severity,

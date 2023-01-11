@@ -24,7 +24,7 @@ export class SubmitGovProposal extends TransactionRule {
 
             if (action === '/cosmos.gov.v1beta1.MsgSubmitProposal') {
                 const alert = factory.create(
-                    'arabica',
+                    'mocha',
                     'active',
                     AlertType.Message,
                     this.severity,

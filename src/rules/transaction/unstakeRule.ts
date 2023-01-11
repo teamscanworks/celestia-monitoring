@@ -26,7 +26,7 @@ export class LargeUnstake extends TransactionRule {
                 if (amount.value > this.threshold) {
 
                     const alert = factory.create(
-                        'arabica',
+                        'mocha',
                         'active',
                         AlertType.Message,
                         this.severity,

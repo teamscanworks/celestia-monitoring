@@ -12,7 +12,7 @@ export class HighNumberTxs extends BlockRule {
         console.log("Processing HighNumberTxsBlock for block " + block.header.height);
         if (block.txs.length > 10) {
             const alert = factory.create(
-                'arabica',
+                'mocha',
                 'active',
                 AlertType.Block,
                 AlertSeverity.Info,

@@ -22,7 +22,7 @@ export class SoftwareUpgradeRule extends TransactionRule {
 
             if (action === '/cosmos.upgrade.v1beta1.MsgSoftwareUpgrade') {
                 const alert = factory.create(
-                    'arabica',
+                    'mocha',
                     'active',
                     AlertType.Info,
                     this.severity,

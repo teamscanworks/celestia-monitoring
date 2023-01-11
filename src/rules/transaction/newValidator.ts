@@ -23,7 +23,7 @@ export class NewValidatorRule extends TransactionRule {
 
             if (action === '/cosmos.staking.v1beta1.MsgCreateValidator') {
                 const alert = factory.create(
-                    'arabica',
+                    'mocha',
                     'active',
                     AlertType.Message,
                     this.severity,

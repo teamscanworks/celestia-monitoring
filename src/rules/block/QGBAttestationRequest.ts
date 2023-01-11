@@ -21,7 +21,7 @@ export class QGBAttestationRequest extends BlockRule {
             const nonce = getAttributeValueByKey(message.attributes, 'nonce');
 
             const alert = factory.create(
-                'arabica',
+                'mocha',
                 'active',
                 AlertType.Block,
                 this.severity,

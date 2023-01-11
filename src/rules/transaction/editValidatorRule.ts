@@ -23,7 +23,7 @@ export class EditValidatorRule extends TransactionRule {
 
             if (action === '/cosmos.staking.v1beta1.MsgEditValidator') {
                 const alert = factory.create(
-                    'arabica',
+                    'mocha',
                     'active',
                     AlertType.Message,
                     this.severity,

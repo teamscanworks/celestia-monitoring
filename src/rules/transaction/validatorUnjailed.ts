@@ -22,7 +22,7 @@ export class ValidatorUnjailed extends TransactionRule {
             if (action === '/cosmos.slashing.v1beta1.MsgUnjail') {
                 const validator = getAttributeValueByKey(message.attributes, 'sender')
                 const alert = factory.create(
-                    'arabica',
+                    'mocha',
                     'active',
                     AlertType.Message,
                     this.severity,
