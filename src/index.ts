@@ -23,6 +23,7 @@ import { ValidatorUnjailed } from "./rules/transaction/validatorUnjailed";
 import { DoubleSignEvidence } from "./rules/transaction/doubleSignEvidenceRule";
 import { SoftwareUpgradeRule } from "./rules/transaction/softwareUpgradeRule";
 import { QGBAttestationRequest } from "./rules/block/QGBAttestationRequest";
+import { PayForData } from "./rules/transaction/payForData";
 import { LargeUnstake } from "./rules/transaction/unstakeRule";
 
 
@@ -70,9 +71,10 @@ export const createIndexer = async () => {
             new EditValidatorRule(AlertSeverity.Low),
             new ValidatorUnjailed(AlertSeverity.Low),
             new SoftwareUpgradeRule(AlertSeverity.Medium),
-            new DoubleSignEvidence(AlertSeverity.High)
+            new DoubleSignEvidence(AlertSeverity.High),
+            new PayForData(AlertSeverity.Info)
         ]);
-        setTimeout(poll, 5000, blockWorker, transactionWorker)
+        setTimeout(poll, 7000, blockWorker, transactionWorker)
     }
 
     const poll = async (blockWorker: BlockWorker, transactionWorker: TransactionWorker) => {
@@ -103,6 +105,7 @@ export const createIndexer = async () => {
 
             // extract transactions from block
             const txs = await txsFromBlock(block);
+            console.log(`Found ${txs.length} transactions in block ${processing}`)
 
             // Handle the transactions
             txs.forEach(async (tx) => {
@@ -122,10 +125,12 @@ export const createIndexer = async () => {
         let txIndex = 0
         while (txIndex < block.txs.length) {
             const txHash: string = toHex(sha256(block.txs[txIndex])).toUpperCase()
+            //console.log(`Getting tx ${txHash}`)
             const indexed: IndexedTx | null = await client.getTx(txHash).catch((e) => {
                 console.log(`Error getting tx ${txHash}: ${e}`)
                 return null
             })
+            //console.log(`Indexed ${indexed}`)
             if (!indexed) {
                 txIndex++
                 continue
